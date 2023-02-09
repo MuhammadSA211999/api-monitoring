@@ -9,6 +9,7 @@ const handler = {}
 
 handler.handleReqRes = (req, res) => {
     // console.log(routes);
+    console.log("the env is", process.env.NODE_ENV);
 
     const parsedUrl = url.parse(req.url, true)
     const path = parsedUrl.pathname
