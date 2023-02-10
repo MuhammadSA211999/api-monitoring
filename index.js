@@ -10,12 +10,25 @@ const environments = require("./helper/environments")
 const data = require("./lib/data")
 // app scaffolding 
 const app = {}
-//testeng file system 
+//testeng file system for create , read, update and delete
 //TODO pore muche dite hobe
-data.create("test", "newFile3", { name: "sa", country: "bd" }, (err) => {
-    console.log("error was", err);
+// create data from here
+// data.create("test", "newFile4", { name: "sa", country: "bd" }, (err) => {
+//     console.log("error was", err);
+// })
+
+//read data from here
+// data.read("test", "newFile", (err, data) => {
+//     console.log("read file system error =>", err, "data is =>", data);
+
+// })
+
+// update the existing file from here
+data.update('test', 'newFile', { "name": "saleh", "country": "Afganistan" }, (err) => {
+    console.log(err);
 
 })
+
 //craete server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes)
