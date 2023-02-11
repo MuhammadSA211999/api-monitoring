@@ -1,6 +1,6 @@
 //dependencies
 const lib = require("../../lib/data")
-const { hash } = require('../../helper/utilities')
+const { hash, parseJSON } = require('../../helper/utilities')
 
 // module scaffolding
 const handler = {}
@@ -60,9 +60,28 @@ handler._users.post = (requestProperties, callback) => {
 
 }
 handler._users.get = (requestProperties, callback) => {
-    callback(200, {
-        "message": "successfully get user route"
-    })
+    const phone = typeof requestProperties.queryStringObject.phone === 'string' && requestProperties.queryStringObject.phone.length === 11 ? requestProperties.queryStringObject.phone : false
+    if (phone) {
+        // look up the user by data.read
+        data.read('users', phone, (err, u) => {
+            const user = { ...parseJSON(u) }
+            if (!err && user) {
+                callback(200, {
+                    user: user
+                })
+            }
+            else {
+                callback(404, {
+                    error: 'Something went wrong'
+                })
+            }
+        })
+    }
+    else {
+        callback(404, {
+            error: 'requested user not found'
+        })
+    }
 }
 handler._users.put = (requestProperties, callback) => {
 
