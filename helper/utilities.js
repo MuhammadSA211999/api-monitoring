@@ -29,8 +29,19 @@ utilities.hash = (str) => {
     }
     return false
 }
-utilities.createRandomString = (length) => {
-    return 'dnggurgbr'
+utilities.createRandomString = (strLength) => {
+    let length = strLength
+    length = typeof strLength === 'number' && strLength.length > 19 ? strLength : false
+    if (length) {
+        const possibleCharacter = 'abcdefghijklmnopqrstwxyz1234567890'
+        let output = ''
+        for (let i = 1; i <= length; i++) {
+            const randomCharac = Math.floor(Math.random() * possibleCharacter.length)
+            output += randomCharac
+            return output
+        }
+        return false
+    }
 }
 
 module.exports = utilities

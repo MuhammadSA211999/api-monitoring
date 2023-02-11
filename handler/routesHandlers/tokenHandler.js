@@ -65,85 +65,68 @@ handler._token.post = (requestProperties, callback) => {
 }
 
 handler._token.get = (requestProperties, callback) => {
-    const phone = typeof requestProperties.queryStringObject.phone === 'string' && requestProperties.queryStringObject.phone.length === 11 ? requestProperties.queryStringObject.phone : false
-    if (phone) {
-        // look up the user by data.read
-        data.read('users', phone, (err, u) => {
-            const user = { ...parseJSON(u) }
-            if (!err && user) {
+    const id = typeof requestProperties.queryStringObject.id === 'string' && requestProperties.queryStringObject.id.length === 20 ? requestProperties.queryStringObject.id : false
+    if (id) {
+        data.read('tokens', id, (err1, token) => {
+            const parsToken = { ...parseJSON(token) }
+
+            if (!err1) {
                 callback(200, {
-                    user: user
+                    token: parsToken
                 })
             }
             else {
-                callback(404, {
-                    error: 'Something went wrong'
+                callback(500, {
+                    error: 'server doesnot found the token'
                 })
             }
         })
     }
     else {
-        callback(404, {
-            error: 'requested user not found'
+        callback(400, {
+            error: 'Need a valid id'
         })
     }
 }
 handler._token.put = (requestProperties, callback) => {
-    const firstName = typeof requestProperties.body.firstName === 'string' && requestProperties.body.firstName.trim().length > 0 ? requestProperties.body.firstName : false
-    const lastName = typeof requestProperties.body.lastName === 'string' && requestProperties.body.lastName.trim().length > 0 ? requestProperties.body.lastName : false
-    const phone = typeof requestProperties.body.phone === 'string' && requestProperties.body.phone.trim().length === 11 ? requestProperties.body.phone : false
-    const password = typeof requestProperties.body.password === 'string' && requestProperties.body.password.length > 0 ? requestProperties.body.password : false
-
-    if (phone) {
-        if (firstName || lastName || password) {
-            //lookup the user file by data.read method
-            data.read('users', phone, (err, uData) => {
-                const userData = { ...parseJSON(uData) }
-                if (!err && userData) {
-                    if (firstName) {
-                        userData.firstName = firstName
-                    }
-                    if (lastName) {
-                        userData.lastName = lastName
-                    }
-                    if (password) {
-                        userData.password = hash(password)
-                    }
-                    //  updating the user to db by data.update method
-                    data.update('user', phone, userData, (err) => {
+    const id = typeof requestProperties.body.id === 'string' ? requestProperties.body.token : false
+    const extend = typeof requestProperties.body.extend === 'boolean' && requestProperties.body.extend === true ? requestProperties.body.extend : false
+    if (id && extend) {
+        data.read('tokens', id, (err1, token) => {
+            let tokenObj = { ...parseJSON(token) }
+            if (!err1) {
+                if (tokenObj.expires > Date.now()) {
+                    tokenObj.expires = Date.now() + 60 * 60 * 1000
+                    data.update('tokens', id, tokenObj, (err) => {
                         if (!err) {
                             callback(200, {
-                                message: 'successfully update the user'
+                                message: 'successfully update the token'
                             })
                         }
                         else {
-                            callback(400, {
-                                error: 'Something went wrong, can not update'
+                            callback(500, {
+                                error: 'Server side error'
                             })
                         }
                     })
                 }
                 else {
-                    callback(404, {
-                        error: 'User was not found'
+                    callback(400, {
+                        error: 'Token has time'
                     })
                 }
-            })
-        }
-        else {
-            callback(400, {
-                error: 'Must need a update field'
-            })
-        }
+            }
+            else {
+
+            }
+        })
     }
     else {
-        callback(400, {
-            error: 'Your phone is not valid'
-        })
+
     }
 }
 handler._token.delete = (requestProperties, callback) => {
-    const phone = typeof requestProperties.queryStringObject.phone === 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
+    const id = typeof requestProperties.queryStringObject.phone === 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
     if (phone) {
         //    lookup the user  by data.read
         data.read('users', phone, (err, uData) => {
