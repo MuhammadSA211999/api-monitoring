@@ -5,7 +5,8 @@ const { userHandler } = require("./handler/routesHandlers/userHandler")
 //module scaffholding
 const routes = {
     sample: sampleHandler,
-    user: userHandler
+    user: userHandler,
+    notFound: notFoundHandler
 }
 
 module.exports = routes
