@@ -1,5 +1,6 @@
 //module scaffolding 
 const utilities = {}
+
 // dependencies
 const crypto = require('crypto')
 const environments = require('./environments')

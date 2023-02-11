@@ -24,7 +24,7 @@ handler.handleReqRes = (req, res) => {
         trimmedPath,
         method,
         queryStringObject,
-        headersObject,
+        // headersObject,
     };
 
     const decoder = new StringDecoder('utf-8');
