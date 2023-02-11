@@ -126,22 +126,22 @@ handler._token.put = (requestProperties, callback) => {
     }
 }
 handler._token.delete = (requestProperties, callback) => {
-    const id = typeof requestProperties.queryStringObject.phone === 'string' && requestProperties.queryStringObject.phone.trim().length === 11 ? requestProperties.queryStringObject.phone : false
-    if (phone) {
+    const id = typeof requestProperties.queryStringObject.id === 'string' && requestProperties.queryStringObject.id.trim().length === 11 ? requestProperties.queryStringObject.phone : false
+    if (id) {
         //    lookup the user  by data.read
-        data.read('users', phone, (err, uData) => {
-            const userData = { ...parseJSON(uData) }
-            if (!err && userData) {
+        data.read('tokens', id, (err, token) => {
+            const parseToken = { ...parseJSON(token) }
+            if (!err && parseToken) {
                 //delete the user from db by data.delete method 
-                data.delete('users', phone, (err) => {
+                data.delete('tokens', id, (err) => {
                     if (!err) {
                         callback(200, {
-                            message: 'successfully delete the user'
+                            message: 'successfully delete the token'
                         })
                     }
                     else {
                         callback(400, {
-                            error: 'there was aserver side error'
+                            error: 'there was server side error'
                         })
                     }
                 })
@@ -155,9 +155,32 @@ handler._token.delete = (requestProperties, callback) => {
     }
     else {
         callback(500, {
-            error: 'Please give a unique i phone'
+            error: 'Please give a unique token number'
         })
     }
+}
+
+handler._token.verifyToken = (id, phone, callback) => {
+    if (id && phone) {
+        data.read('tokens', id, (err, tokenData) => {
+            if (!err && tokenData) {
+                const parseToken = { ...parseJSON(tokenData) }
+                if (parseToken.id === id && parseToken.expires > Date.now()) {
+                    callback(true)
+                }
+                else {
+                    callback(false)
+                }
+            }
+            else {
+                callback(false)
+            }
+        })
+    }
+    else {
+        callback(false)
+    }
+
 }
 
 
