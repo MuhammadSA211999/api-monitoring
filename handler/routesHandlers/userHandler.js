@@ -151,10 +151,14 @@ handler._users.delete = (requestProperties, callback) => {
                 //delete the user from db by data.delete method 
                 data.delete('users', phone, (err) => {
                     if (!err) {
-
+                        callback(200, {
+                            message: 'successfully update the user'
+                        })
                     }
                     else {
-
+                        callback(400, {
+                            error: 'there was aserver side error'
+                        })
                     }
                 })
             }
