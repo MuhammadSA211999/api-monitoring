@@ -24,10 +24,14 @@ const app = {}
 // })
 
 // update the existing file from here
-data.update('test', 'newFile', { "name": "saleh", "country": "Afganistan" }, (err) => {
-    console.log(err);
+// data.update('test', 'newFile', { "name": "saleh", "country": "Afganistan" }, (err) => {
+//     console.log(err);
+// })
 
-})
+// delete = fs.unlink the existing file from here
+// data.delete("test", "newFile", (err) => {
+//     console.log(err);
+// })
 
 //craete server
 app.createServer = () => {
