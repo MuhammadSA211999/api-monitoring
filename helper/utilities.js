@@ -29,5 +29,8 @@ utilities.hash = (str) => {
     }
     return false
 }
+utilities.createRandomString = (length) => {
+    return 'dnggurgbr'
+}
 
 module.exports = utilities
